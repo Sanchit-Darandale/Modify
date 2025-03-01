@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <style>
+    /* Background image for the whole website */
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      width: 80%;
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      flex: 1;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #555;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .total {
+      text-align: right;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+    /* Footer styling */
+    footer {
+      background: #333;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    footer a img {
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Expense Tracker</h1>
+    <!-- Expense input form -->
+    <form id="expense-form">
+      <input type="text" id="description" placeholder="Expense Description" required />
+      <input type="number" id="amount" placeholder="Amount" required />
+      <select id="category" required>
+        <option value="">Select Category</option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Utilities">Utilities</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Other">Other</option>
+      </select>
+      <button type="submit">Add Expense</button>
+    </form>
+
+    <!-- Table to display expenses -->
+    <table id="expense-table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Amount</th>
+          <th>Category</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Expenses will be dynamically inserted here -->
+      </tbody>
+    </table>
+
+    <!-- Display total expense amount -->
+    <div class="total" id="total-amount">Total: ₹0.00</div>
+  </div>
+
+  <footer>
+    <p><small>&copy; 2025 Sanchit <i class="fab fa-github"></i>  All Rights Reserved.</small></p>
+    <a href="https://github.com/sanchit-darandale" target="_blank">
+      <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo" width="30">
+      Developed By Sanchit &amp; Team Members
+    </a>
+  </footer>
+
+  <script>
+    // Array to store expense records
+    let expenses = [];
+
+    // Function to update the expense table and total display
+    function updateTable() {
+      const tbody = document.querySelector('#expense-table tbody');
+      tbody.innerHTML = ''; // Clear current table contents
+      let total = 0;
+
+      // Loop through each expense and create a table row
+      expenses.forEach((expense, index) => {
+        total += parseFloat(expense.amount);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${expense.description}</td>
+          <td>₹${parseFloat(expense.amount).toFixed(2)}</td>
+          <td>${expense.category}</td>
+          <td><button onclick="deleteExpense(${index})">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      // Update the total expense display
+      document.getElementById('total-amount').innerText = 'Total: ₹' + total.toFixed(2);
+    }
+
+    // Event listener for the expense form submission
+    document.getElementById('expense-form').addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent page refresh
+
+      // Get input values
+      const description = document.getElementById('description').value;
+      const amount = document.getElementById('amount').value;
+      const category = document.getElementById('category').value;
+
+      // Create an expense object and add it to the expenses array
+      const expense = { description, amount, category };
+      expenses.push(expense);
+
+      // Update table and clear the form fields
+      updateTable();
+      document.getElementById('description').value = '';
+      document.getElementById('amount').value = '';
+      document.getElementById('category').value = '';
+    });
+
+    // Function to delete an expense entry
+    function deleteExpense(index) {
+      expenses.splice(index, 1);
+      updateTable();
+    }
+  </script>
+</body>
+</html>
