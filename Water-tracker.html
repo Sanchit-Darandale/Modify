@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Water Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f7fa;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #00796b;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #bdbdbd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #00796b;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #004d40;
+    }
+    .progress-container {
+      background: #b2dfdb;
+      border-radius: 5px;
+      margin: 20px 0;
+      height: 30px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #00796b;
+      width: 0%;
+      text-align: center;
+      color: #fff;
+      line-height: 30px;
+      transition: width 0.3s ease;
+    }
+    .status {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Daily Water Tracker</h1>
+    <p>Daily Goal: <strong>2000 mL</strong></p>
+    <input type="number" id="waterInput" placeholder="Enter water amount in mL" required />
+    <button id="addWaterBtn">Add Water</button>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar">0%</div>
+    </div>
+    <div class="status" id="statusText">Total Consumed: 0 mL</div>
+  </div>
+
+  <script>
+    const dailyGoal = 2000;
+    let totalConsumed = 0;
+
+    const waterInput = document.getElementById('waterInput');
+    const addWaterBtn = document.getElementById('addWaterBtn');
+    const progressBar = document.getElementById('progressBar');
+    const statusText = document.getElementById('statusText');
+
+    addWaterBtn.addEventListener('click', function() {
+      const waterAmount = parseInt(waterInput.value);
+      if (isNaN(waterAmount) || waterAmount <= 0) {
+        alert('Please enter a valid water amount');
+        return;
+      }
+      totalConsumed += waterAmount;
+      updateProgress();
+      waterInput.value = '';
+    });
+
+    function updateProgress() {
+      let percentage = Math.min((totalConsumed / dailyGoal) * 100, 100);
+      progressBar.style.width = percentage + '%';
+      progressBar.textContent = Math.floor(percentage) + '%';
+      statusText.textContent = 'Total Consumed: ' + totalConsumed + ' mL';
+
+      if (totalConsumed >= dailyGoal) {
+        statusText.textContent += ' - Goal Achieved!';
+      }
+    }
+  </script>
+</body>
+</html>
