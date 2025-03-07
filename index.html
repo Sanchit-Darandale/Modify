@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker with Login, Budget & Date/Time</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://raw.githubusercontent.com/Sanchit-Darandale/Modify/main/images.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      width: 80%;
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      flex: 1;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button { 
+      background-color: #333; 
+      color: #fff; 
+      cursor: pointer; 
+    }
+    button:hover { 
+      background-color: #555; 
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    .total {
+      text-align: right;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+    footer {
+      background: #333;
+      color: #fff;
+      text-align: center;
+      padding: 5px 0;
+      font-size: 0.8em;
+    }
+    footer p {
+      margin: 3px 0;
+    }
+    /* Hide containers by default */
+    #login-container, #tracker-container {
+      display: none;
+    }
+    .budget-section {
+      margin-bottom: 20px;
+    }
+    #budget-display {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    #budget-warning {
+      color: red;
+      display: none;
+    }
+  </style>
+  <!-- Font Awesome for the GitHub icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+        integrity="sha512-pO2nY1Y0vT6x2I6F9FmbV6K84JSk8CXJ95/O1qwRyCkNnsfIWolD0/ERHlPsvF6ygi1ppEAV6h3r0Mk9fJ+KNA==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <!-- Login/Registration Container -->
+  <div class="container" id="login-container">
+    <h1>Expense Tracker Login</h1>
+    <form id="login-form">
+      <input type="text" id="login-username" placeholder="Username" required />
+      <input type="password" id="login-password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p style="text-align:center;">Don't have an account? <a href="#" id="show-register">Register here</a></p>
+    <div id="register-section" style="display: none;">
+      <h2>Register</h2>
+      <form id="register-form">
+        <input type="text" id="register-username" placeholder="Username" required />
+        <input type="password" id="register-password" placeholder="Password" required />
+        <button type="submit">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Expense Tracker Container -->
+  <div class="container" id="tracker-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Expense Tracker</h1>
+      <button id="logout-btn" style="width: auto; padding: 5px 10px;">Logout</button>
+    </div>
+    <div id="welcome-message" style="text-align:center; margin-bottom: 10px;"></div>
+    <!-- Budget Section -->
+    <div class="budget-section">
+      <input type="number" id="budget-input" placeholder="Set your budget" />
+      <button id="set-budget-btn">Set Budget</button>
+      <div id="budget-display">Budget: ₹0.00</div>
+      <div id="budget-warning">Warning: You have exceeded your budget!</div>
+    </div>
+    <!-- Expense input form -->
+    <form id="expense-form">
+      <input type="text" id="description" placeholder="Expense Description" required />
+      <input type="number" id="amount" placeholder="Amount" required />
+      <select id="category" required>
+        <option value="">Select Category</option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Utilities">Utilities</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Electronic Product">Electronic Product</option>
+        <option value="Grocery">Grocery</option>
+        <option value="Other">Other</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Education">Education</option>
+        <option value="Travel">Travel</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Personal Care">Personal Care</option>
+        <option value="Investments">Investments</option>
+        <option value="Rent">Rent</option>
+        <option value="Insurance">Insurance</option>
+        <option value="Taxes">Taxes</option>
+        <option value="Subscriptions">Subscriptions</option>
+      </select>
+      <button type="submit">Add Expense</button>
+    </form>
+    <!-- Table to display expenses -->
+    <table id="expense-table">
+      <thead>
+        <tr>
+          <th>Date & Time</th>
+          <th>Description</th>
+          <th>Amount</th>
+          <th>Category</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Expenses will be dynamically inserted here -->
+      </tbody>
+    </table>
+    <!-- Display total expense amount -->
+    <div class="total" id="total-amount">Total: ₹0.00</div>
+  </div>
+
+  <footer>
+    <p><small>• Developed By Sanchit &amp; Team Members •</small></p>
+    <p><small>&copy; 2025 All Rights Reserved.</small></p>
+  </footer>
+
+  <script>
+    // Utility function to get stored data from localStorage
+    function getStoredData(key, defaultValue) {
+      return JSON.parse(localStorage.getItem(key)) || defaultValue;
+    }
+
+    // User login and registration
+    let users = getStoredData('users', {}); // Users stored as an object with username keys
+    let currentUser = localStorage.getItem('currentUser') || null;
+
+    // Show login view
+    function showLogin() {
+      document.getElementById('login-container').style.display = 'block';
+      document.getElementById('tracker-container').style.display = 'none';
+    }
+
+    // Show tracker view and load user data
+    function showTracker() {
+      document.getElementById('login-container').style.display = 'none';
+      document.getElementById('tracker-container').style.display = 'block';
+      document.getElementById('welcome-message').innerText = 'Welcome, ' + currentUser;
+      // Load user-specific expenses and budget
+      expenses = getStoredData('expenses_' + currentUser, []);
+      budget = parseFloat(localStorage.getItem('budget_' + currentUser)) || 0;
+      updateBudgetDisplay();
+      updateTable();
+    }
+
+    // Login form handling
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      if (users[username] && users[username].password === password) {
+        currentUser = username;
+        localStorage.setItem('currentUser', currentUser);
+        showTracker();
+      } else {
+        alert('Invalid username or password');
+      }
+    });
+
+    // Toggle registration section
+    document.getElementById('show-register').addEventListener('click', function(e) {
+      e.preventDefault();
+      const regSection = document.getElementById('register-section');
+      regSection.style.display = regSection.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Registration form handling
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('register-username').value.trim();
+      const password = document.getElementById('register-password').value;
+      if (users[username]) {
+        alert('Username already exists');
+      } else {
+        users[username] = { password: password };
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('Registration successful! Please login.');
+        document.getElementById('register-form').reset();
+        document.getElementById('register-section').style.display = 'none';
+      }
+    });
+
+    // Logout button handling
+    document.getElementById('logout-btn').addEventListener('click', function() {
+      localStorage.removeItem('currentUser');
+      currentUser = null;
+      expenses = [];
+      budget = 0;
+      showLogin();
+    });
+
+    // Expense Tracker functionality
+    let expenses = getStoredData('expenses_' + currentUser, []); // User-specific expenses
+    let budget = parseFloat(localStorage.getItem('budget_' + currentUser)) || 0;
+
+    function updateTable() {
+      const tbody = document.querySelector('#expense-table tbody');
+      tbody.innerHTML = ''; // Clear existing rows
+      let total = 0;
+      expenses.forEach((expense, index) => {
+        total += parseFloat(expense.amount);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${expense.dateTime}</td>
+          <td>${expense.description}</td>
+          <td>₹${parseFloat(expense.amount).toFixed(2)}</td>
+          <td>${expense.category}</td>
+          <td><button onclick="deleteExpense(${index})">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('total-amount').innerText = 'Total: ₹' + total.toFixed(2);
+      localStorage.setItem('expenses_' + currentUser, JSON.stringify(expenses));
+      checkBudget(total);
+    }
+
+    function deleteExpense(index) {
+      expenses.splice(index, 1);
+      updateTable();
+    }
+
+    // Handle expense form submission
+    document.getElementById('expense-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const description = document.getElementById('description').value;
+      const amount = document.getElementById('amount').value;
+      const category = document.getElementById('category').value;
+      // Capture current date & time as a string
+      const dateTime = new Date().toLocaleString();
+      const expense = { description, amount, category, dateTime };
+      expenses.push(expense);
+      updateTable();
+      this.reset();
+    });
+
+    // Budget functionality
+    document.getElementById('set-budget-btn').addEventListener('click', function() {
+      const budgetInput = document.getElementById('budget-input').value;
+      budget = parseFloat(budgetInput);
+      if (isNaN(budget)) {
+        alert('Please enter a valid number for the budget');
+        return;
+      }
+      localStorage.setItem('budget_' + currentUser, budget);
+      updateBudgetDisplay();
+      updateTable();
+    });
+
+    function updateBudgetDisplay() {
+      const budgetDisplay = document.getElementById('budget-display');
+      budgetDisplay.innerText = 'Budget: ₹' + budget.toFixed(2);
+      document.getElementById('budget-warning').style.display = 'none';
+    }
+
+    function checkBudget(total) {
+      if (budget > 0 && total > budget) {
+        document.getElementById('budget-display').style.color = 'red';
+        document.getElementById('budget-warning').style.display = 'block';
+      } else {
+        document.getElementById('budget-display').style.color = 'black';
+        document.getElementById('budget-warning').style.display = 'none';
+      }
+    }
+
+    // Initialize view based on login status
+    if (currentUser) {
+      showTracker();
+    } else {
+      showLogin();
+    }
+  </script>
+</body>
+</html>
+  
